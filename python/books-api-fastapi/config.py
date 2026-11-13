@@ -1,0 +1,5 @@
+DB_HOST = "your host"
+DB_PORT = "your port"
+DB_USER = "youruser"
+DB_PASSWORD = "yourpass"
+DB_NAME = "your db name"

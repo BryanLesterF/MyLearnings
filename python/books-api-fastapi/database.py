@@ -4,14 +4,15 @@ from sqlalchemy.ext.declarative import declarative_base
 from urllib.parse import quote_plus
 from sqlalchemy.engine import URL
 
-# In real system, values in URL_DATABASE should be retrieved from a config file or url. 
+import config
+
 URL_DATABASE = URL.create(
     drivername="mysql+pymysql",
-    username="my_user",
-    password="my_pass",
-    host="localhost",
-    port=3306,
-    database="fastapi_schema"
+    username=config.DB_USER,
+    password=config.DB_PASSWORD,
+    host=config.DB_HOST,
+    port=config.DB_PORT,
+    database=config.DB_NAME
 )
 
 engine = create_engine(URL_DATABASE)
