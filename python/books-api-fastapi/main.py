@@ -9,7 +9,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 class BookBase(BaseModel):
-    name:str
+    title:str
 
 def get_db():
     db = SessionLocal()
@@ -35,4 +35,10 @@ async def get_book(book_id: int, db:db_dependency):
     book = db.query(models.Book).filter(models.Book.id == book_id).first()
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
-    return book
+    return {
+        "book": {
+            "id": book.id,
+            "title": book.title,
+        }
+    }
+
