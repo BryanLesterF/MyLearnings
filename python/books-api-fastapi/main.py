@@ -39,6 +39,14 @@ async def get_book(book_id: int, db:db_dependency):
         "book": {
             "id": book.id,
             "title": book.title,
+            "stock_quantity": book.stock_quantity,
+            "stock_status": get_stock_status(book.stock_quantity)
         }
     }
 
+def get_stock_status(quantity: int) -> str:
+    if quantity <= 0:
+        return "OUT_OF_STOCK"
+    if quantity <= 5:
+        return "LOW_STOCK"
+    return "IN_STOCK"
