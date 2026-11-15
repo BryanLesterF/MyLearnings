@@ -11,6 +11,9 @@ models.Base.metadata.create_all(bind=engine)
 class BookBase(BaseModel):
     title:str
 
+class StockUpdate(BaseModel):
+    quantity: int
+
 def get_db():
     db = SessionLocal()
     try:
@@ -43,6 +46,30 @@ async def get_book(book_id: int, db:db_dependency):
             "stock_status": get_stock_status(book.stock_quantity)
         }
     }
+
+@app.post("/books/{book_id}/stock", status_code=status.HTTP_200_OK)
+def add_stock_quantity(book_id: int, stock: StockUpdate, db: db_dependency):
+    book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    new_quantity = book.stock_quantity + stock.quantity
+    if new_quantity < 0:
+        raise HTTPException(status_code=400, detail="Stock cannot go below 0")
+
+    book.stock_quantity = new_quantity
+    db.commit()
+    db.refresh(book)
+
+    return {
+        "book": {
+            "id": book.id,
+            "title": book.title,
+            "stock_quantity": book.stock_quantity,
+            "stock_status": get_stock_status(book.stock_quantity)
+        }
+    }
+
 
 def get_stock_status(quantity: int) -> str:
     if quantity <= 0:
