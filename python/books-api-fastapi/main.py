@@ -57,14 +57,14 @@ def add_stock_quantity(book_id: int, stock: StockUpdate, db: db_dependency):
 
     return book_response(book)
 
-
+# helper function to get stock status
 def get_stock_status(quantity: int) -> str:
     if quantity <= 0:
         return "OUT_OF_STOCK"
     if quantity <= 5:
         return "LOW_STOCK"
     return "IN_STOCK"
-
+# helper function for uniform response
 def book_response(book: models.Book) -> dict:
     return {
         "book": {
