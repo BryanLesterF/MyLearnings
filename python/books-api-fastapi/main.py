@@ -95,6 +95,7 @@ def get_stock_status(quantity: int) -> str:
     if quantity <= 5:
         return "LOW_STOCK"
     return "IN_STOCK"
+
 # helper function for uniform response
 def book_response(book: models.Book) -> dict:
     author = book.author
