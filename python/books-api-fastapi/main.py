@@ -27,19 +27,20 @@ db_dependency = Annotated[Session, Depends(get_db)]
 def root():
     return {"hello": "world"}
 
+# add book entry
 @app.post("/books/", status_code=status.HTTP_201_CREATED)
 async def create_book(book:BookBase, db:db_dependency):
     db_book = models.Book(**book.model_dump())
     db.add(db_book)
     db.commit()
-
+# get book entry via book id 
 @app.get("/books/{book_id}", status_code=status.HTTP_200_OK)
 async def get_book(book_id: int, db:db_dependency):
     book = db.query(models.Book).filter(models.Book.id == book_id).first()
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
     return book_response(book)
-
+# add stock quantity to selected book
 @app.post("/books/{book_id}/stock", status_code=status.HTTP_200_OK)
 def add_stock_quantity(book_id: int, stock: StockUpdate, db: db_dependency):
     book = db.query(models.Book).filter(models.Book.id == book_id).first()
